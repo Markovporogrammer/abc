@@ -1,0 +1,33 @@
+eureka:
+  instance:
+    hostname: eureka1.server.com
+    # 表示eureka client间隔多久去拉取服务注册信息，默认为30秒，如果要迅速获取服务注册状态，可以缩小该值
+    lease-renewal-interval-in-seconds: 5
+    # 表示eureka server至上一次收到client的心跳之后，等待下一次心跳的超时时间，在这个时间内若没收到下一次心跳，则将移除该instance。
+    # 默认为90秒
+    # 如果该值太大，则很可能将流量转发过去的时候，该instance已经不存活了。
+    # 如果该值设置太小了，则instance则很可能因为临时的网络抖动而被摘除掉。
+    # 该值至少应该大于 leaseRenewalIntervalInSeconds
+    lease-expiration-duration-in-seconds: 10
+  client:
+    service-url:
+      defaultZone: http://eureka1.server.com:8701/eureka/,http://eureka2.server.com:8702/eureka/,http://eureka3.server.com:8703/eureka/
+
+
+spring:
+  application:
+    name: spring-cloud-stream
+  cloud:
+    stream:
+      kafaka:
+        binder:
+          brokers: 100.80.12.99:9092 #kafaka服务地址
+          zk-noeds: 100.80.12.99:2181 #zk服务地址
+          auto-create-topics: true
+      bindings:
+        output:  #stream默认提供的output
+          destination: stream-kafaka #消息发送到的目的地
+          content-type: text/plain #消息发送格式，接收端不用指定格式，但是发送端要。
+
+server:
+  port: 1000
